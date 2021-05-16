@@ -13,7 +13,7 @@ class ReactPannellum extends React.Component {
     sceneId: PropTypes.string.isRequired,
     children: PropTypes.any,
     type: PropTypes.string,
-    imageSource: PropTypes.string,
+    panorama: PropTypes.string,
     equirectangularOptions: PropTypes.shape({}),
     cubeMap: PropTypes.arrayOf(PropTypes.string),
     multiRes: PropTypes.shape({
@@ -33,7 +33,7 @@ class ReactPannellum extends React.Component {
 
   static defaultProps = {
     type: "equirectangular",
-    imageSource: "",
+    panorama: "",
     equirectangularOptions: {},
     cubeMap: [],
     multiRes: {},
@@ -43,7 +43,7 @@ class ReactPannellum extends React.Component {
   };
 
   state = {
-    imageSource: "",
+    panorama: "",
     equirectangularOptions: {},
     cubeMap: [],
     multiRes: {},
@@ -51,7 +51,7 @@ class ReactPannellum extends React.Component {
 
   init = () => {
     const {
-      imageSource,
+      panorama,
       equirectangularOptions,
       cubeMap,
       multiRes,
@@ -65,10 +65,10 @@ class ReactPannellum extends React.Component {
         [sceneId]: {
           ...configs.panoramaConfigs,
           ...configs.equirectangularOptions,
-          ...configs.uiText,
+          ...configs.strings,
           ...config,
           type,
-          imageSource,
+          panorama,
           ...equirectangularOptions,
           cubeMap,
           multiRes,
@@ -81,7 +81,7 @@ class ReactPannellum extends React.Component {
 
   initPanalleum() {
     const {
-      imageSource,
+      panorama,
       type,
       cubeMap,
       multiRes,
@@ -91,7 +91,7 @@ class ReactPannellum extends React.Component {
       case "equirectangular":
         this.setState(
           {
-            imageSource,
+            panorama,
             equirectangularOptions,
             cubeMap: [],
           },
@@ -102,7 +102,7 @@ class ReactPannellum extends React.Component {
         this.setState(
           {
             cubeMap,
-            imageSource: "",
+            panorama: "",
           },
           () => this.init()
         );
@@ -111,7 +111,7 @@ class ReactPannellum extends React.Component {
         this.setState(
           {
             cubeMap: [],
-            imageSource: "",
+            panorama: "",
             multiRes,
           },
           () => this.init()
@@ -284,7 +284,7 @@ class ReactPannellum extends React.Component {
         });
     } else {
       console.log(
-        "sceneId cannot be empty and config.imageSource cannot be empty!!"
+        "sceneId cannot be empty and config.panorama cannot be empty!!"
       );
     }
   }

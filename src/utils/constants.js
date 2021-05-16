@@ -1,5 +1,5 @@
 export const configs = {
-  uiText: {
+  strings: {
     loadButtonLabel: "Click to<br>Load<br>Panorama",
     loadingLabel: "Loading...",
     bylineLabel: "by %s",
