@@ -10,6 +10,8 @@ export default (function (window, document, undefined) {
       renderer,
       preview,
       draggingHotSpot,
+      deltaStartMovementOfHotSpotDrag,
+      deltaStopMovementOfHotSpotDrag,
       isUserInteracting = false,
       latestInteraction = Date.now(),
       onPointerDownPointerX = 0,
@@ -1879,10 +1881,16 @@ export default (function (window, document, undefined) {
       } else {
         if (hs.sceneId) {
           div.onclick = div.ontouchend = function () {
-            if (!div.clicked) {
-              div.clicked = true;
+            if(deltaStartMovementOfHotSpotDrag === undefined){
+              deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+            }
+            console.log(Math.abs(deltaStartMovementOfHotSpotDrag.pitch - deltaStopMovementOfHotSpotDrag.pitch));
+            console.log(Math.abs(deltaStartMovementOfHotSpotDrag.yaw - deltaStopMovementOfHotSpotDrag.yaw));
+            if (Math.abs(deltaStartMovementOfHotSpotDrag.pitch - deltaStopMovementOfHotSpotDrag.pitch) == 0 && Math.abs(deltaStartMovementOfHotSpotDrag.yaw - deltaStopMovementOfHotSpotDrag.yaw) == 0) {
               loadScene(hs.sceneId, hs.targetPitch, hs.targetYaw, hs.targetHfov);
             }
+            deltaStartMovementOfHotSpotDrag=undefined;
+
             return false;
           };
           div.className += ' pnlm-pointer';
@@ -1923,6 +1931,8 @@ export default (function (window, document, undefined) {
           if (hs.dragHandlerFunc)
             hs.dragHandlerFunc(e, hs.dragHandlerArgs);
           draggingHotSpot = hs;
+          deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+          deltaStopMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
         });
 
         if (document.documentElement.style.pointerAction === '' &&
@@ -1931,6 +1941,15 @@ export default (function (window, document, undefined) {
             if (hs.dragHandlerFunc)
               hs.dragHandlerFunc(e, hs.dragHandlerArgs);
             draggingHotSpot = hs;
+            deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+            deltaStopMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+          });
+          div.addEventListener('touchstart', function (e) {
+            if (hs.dragHandlerFunc)
+              hs.dragHandlerFunc(e, hs.dragHandlerArgs);
+            draggingHotSpot = hs;
+            deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+            deltaStopMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
           });
         }
 
@@ -1942,6 +1961,10 @@ export default (function (window, document, undefined) {
           if (hs.dragHandlerFunc)
             hs.dragHandlerFunc(e, hs.dragHandlerArgs);
           draggingHotSpot = null;
+          if(deltaStartMovementOfHotSpotDrag === undefined){
+            deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+          }
+          deltaStopMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
         })
       }
 
@@ -1958,8 +1981,13 @@ export default (function (window, document, undefined) {
       var coords = mouseEventToCoords(event);
       hs.pitch = coords[0];
       hs.yaw = coords[1];
+      //fix for touchstart dont bubbling in ios and another touch devices
+      if(deltaStartMovementOfHotSpotDrag === undefined){
+        deltaStartMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
+      }
+      deltaStopMovementOfHotSpotDrag = { pitch: hs.pitch, yaw: hs.yaw };
       renderHotSpot(hs);
-    };
+    }
 
     /**
      * Creates hot spot elements for the current scene.
