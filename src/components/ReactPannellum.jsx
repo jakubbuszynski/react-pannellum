@@ -47,6 +47,7 @@ class ReactPannellum extends React.Component {
     equirectangularOptions: {},
     cubeMap: [],
     multiRes: {},
+    pannellumInstance: {}
   };
 
   init = () => {
@@ -55,9 +56,13 @@ class ReactPannellum extends React.Component {
       equirectangularOptions,
       cubeMap,
       multiRes,
+      pannellumInstance
     } = this.state;
     const { sceneId, config, type } = this.props;
-    myPannellum = pannellum.viewer(this.props.id, {
+    let pannelumInst= null;
+    console.log("Props ID");
+    console.log(this.props.id);
+    pannelumInst = myPannellum = pannellum.viewer(this.props.id, {
       default: {
         firstScene: sceneId,
       },
@@ -75,6 +80,7 @@ class ReactPannellum extends React.Component {
         },
       },
     });
+    this.setState({...this.state.pannellumInstance, pannelumInst});
     this.props.onPanoramaLoaded &&
       myPannellum.on("load", () => this.props.onPanoramaLoaded());
   };
