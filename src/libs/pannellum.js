@@ -67,7 +67,7 @@ export default (function (window, document, undefined) {
       showFullscreenCtrl: true,
       dynamic: false,
       dynamicUpdate: false,
-      doubleClickZoom: true,
+      doubleClickZoom: false,
       keyboardZoom: true,
       mouseZoom: true,
       showZoomCtrl: true,
